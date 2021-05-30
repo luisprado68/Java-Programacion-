@@ -2,7 +2,7 @@
 package ar.com.peliculas.datos;
 
 import ar.com.peliculas.domain.Pelicula;
-import ar.com.peliculas.excepciones.EscrituraDatosException;
+import ar.com.peliculas.excepciones.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class AccesoDatosImpl implements IAccesoDatos{
     }
 
     @Override
-    public List<Pelicula> listar(String nombreArchivo) {
+    public List<Pelicula> listar(String nombreArchivo) throws LecturaDatosException {
         
         List<Pelicula> peliculas = new ArrayList<>();
         var archivo = new File(nombreArchivo + ".txt");
@@ -39,6 +39,7 @@ public class AccesoDatosImpl implements IAccesoDatos{
             
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(System.out);
+            throw new LecturaDatosException("Excepcion al listar peliculas:"+ ex.getMessage());
         } catch (IOException ex) {
             ex.printStackTrace(System.out);
         }
@@ -48,7 +49,7 @@ public class AccesoDatosImpl implements IAccesoDatos{
     }
 
     @Override
-    public void escribir(Pelicula pelicula, String nombreArchivo, boolean anexar) {
+    public void escribir(Pelicula pelicula, String nombreArchivo, boolean anexar) throws EscrituraDatosException {
         
         File archivo = new File(nombreArchivo + ".txt");
         try {
@@ -60,13 +61,14 @@ public class AccesoDatosImpl implements IAccesoDatos{
        
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(System.out);
+            throw new EscrituraDatosException("Excepcion al escribir :"+ ex.getMessage());
         } catch (IOException ex) {
             ex.printStackTrace(System.out);
         }
     }
 
     @Override
-    public String buscar(String nombreArchivo, String buscar) {
+    public String buscar(String nombreArchivo, String buscar) throws LecturaDatosException {
         
         if(this.existe(nombreArchivo)){
             List<Pelicula> lista = this.listar(nombreArchivo);
@@ -84,7 +86,7 @@ public class AccesoDatosImpl implements IAccesoDatos{
     }
 
     @Override
-    public void crear(String nombreArchivo) {
+    public void crear(String nombreArchivo) throws EscrituraDatosException {
         File archivo = new File(nombreArchivo + ".txt");
         try {
             PrintWriter salida = new PrintWriter(archivo);
@@ -93,6 +95,7 @@ public class AccesoDatosImpl implements IAccesoDatos{
 
         } catch (FileNotFoundException ex) {
             ex.printStackTrace(System.out);
+            throw new EscrituraDatosException("Excepcion al escribir :"+ ex.getMessage());
         }
     }
 
